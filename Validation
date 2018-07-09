@@ -1,0 +1,60 @@
+function searchGA() {
+
+      var datefield1 = document.getElementById("d1").value;
+      if (datefield1.length > 0) {
+            if (!(validate(datefield1)))
+                  return;
+      }
+}
+function validate(localDate) {
+      var datePat1 = /(\d{2})-(\d{2})-(\d{4})/;
+      var matchArray = localDate.match(datePat1);
+
+      if (matchArray == null) {
+            document.getElementById("errorMessage").innerHTML = "Date must be in MM-DD-YYYY format";
+            return false;
+      }
+
+      var month = matchArray[1]; // parse date into variables
+      var day = matchArray[2];
+      var year = matchArray[3];
+
+      if (month < 1 || month > 12) { // check month range
+            document.getElementById("errorMessage").innerHTML = "Invalid date";
+            return false;
+      }
+      if (day < 1 || day > 31) {
+            document.getElementById("errorMessage").innerHTML = "Invalid date";
+            return false;
+      }
+      if ((month == 4 || month == 6 || month == 9 || month == 11) && day == 31) {
+            document.getElementById("errorMessage").innerHTML = "Invalid date";
+            return false;
+      }
+      if (month == 2) { // check for february 29th
+            var isleap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+            if (day > 29 || (day == 29 && !isleap)) {
+                  document.getElementById("errorMessage").innerHTML = "Invalid date";
+                  return false;
+            }
+      }
+      if(checkFutureDate(localDate)){
+            return true;
+      }
+      return false;
+}
+
+function checkFutureDate(localDate) {
+
+      var mydate = new Date(localDate);
+      var today = new Date();
+      if (mydate.getTime() > today.getTime()) {
+            return false;
+      }
+      var year1 = mydate.getFullYear();
+      if (year1 <= 2009) {
+            document.getElementById("errorMessage").innerHTML = "Date range cannot be prior to 01-01-2010";
+            return false;
+      }
+      return true;
+}
